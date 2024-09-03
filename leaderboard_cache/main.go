@@ -3,13 +3,19 @@ package main
 import (
 	"context"
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 	"github.com/miladjlz/leaderboard/types"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"os"
 	"time"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	var (
 		ctx = context.Background()
 	)
@@ -19,7 +25,7 @@ func main() {
 	}
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "",
+		Password: os.Getenv("REDIS_PASS"),
 		DB:       0,
 	})
 	rs := NewRedisStore(rdb.Conn(), ctx)
